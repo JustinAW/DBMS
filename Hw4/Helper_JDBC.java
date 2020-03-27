@@ -17,6 +17,7 @@ public class Helper_JDBC
      */
     public long runInsertion (Connection db_conn) throws SQLException
     {
+        System.out.println("Starting timed insertion test...");
         long start_time = System.nanoTime();
         Random rng = new Random();
         statemnt = db_conn.createStatement();
@@ -29,15 +30,23 @@ public class Helper_JDBC
                 + "(Integer1, Integer2, Statstr, Varstr, Dble)"
                 + "VALUES (";
             str = Integer.toString(loops);
-            sql += "'" + str + "',";
-            sql += "'" + str + "',";
+            sql += str + ",";
+            sql += str + ",";
             str = getRandstr(rng, 10);
             sql += "'" + str + "',";
             str = getRandstr(rng, 30);
             sql += "'" + str + "',";
             str = Double.toString(rng.nextDouble());
-            sql += "'" + str + "');";
-            statemnt.executeUpdate(sql);
+            sql += str + ");";
+            try {
+                statemnt.executeUpdate(sql);
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+                if (statemnt != null) {
+                    statemnt.close();
+                }
+                return -1;
+            }
         }
 
         if (statemnt != null) {
@@ -46,7 +55,10 @@ public class Helper_JDBC
 
         long end_time = System.nanoTime();
         //divide by 1000000000 to get seconds.
+        // or 1000000 to get milliseconds
         long duration = (end_time - start_time);
+        System.out.println(
+                "Done! Time: " + (duration/1000000) + " milliseconds");
         return duration;
     }
 
@@ -69,8 +81,9 @@ public class Helper_JDBC
     public void timeToFile (long duration)
     {
         /** convert time to seconds */
-        duration /= 1000000000;
+        duration /= 1000000;
         String entry = Long.toString(duration);
+        entry += ",\n";
         openFile();
         try {
             FWRITER.append(entry);
@@ -134,7 +147,12 @@ public class Helper_JDBC
         } else {
             sql += ");";
         }
-        statemnt.executeUpdate(sql);
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return;
+        }
         System.out.println("Table created");
         if (statemnt != null) {
             statemnt.close();
@@ -151,7 +169,12 @@ public class Helper_JDBC
         String sql;
         statemnt = db_conn.createStatement();
         sql = "DROP TABLE TEST_WEIGLE;";
-        statemnt.executeUpdate(sql);
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return;
+        }
         System.out.println("Table deleted");
         if (statemnt != null) {
             statemnt.close();

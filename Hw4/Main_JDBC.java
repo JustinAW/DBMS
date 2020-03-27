@@ -64,9 +64,13 @@ public class Main_JDBC
 
                 if (runs >= 1) {
                     for (; runs > 0; runs--) {
+                        time_result = 0;
                         time_result = helper.runInsertion(db_conn);
-                        //timeToFile(time_result);
-                        System.out.println(time_result);
+                        if (time_result < 0) {
+                            System.out.println("Error during insertion");
+                            break;
+                        }
+                        helper.timeToFile(time_result);
                         if (runs > 1) {
                             helper.dropTable(db_conn);
                             if (prim == 1) {
