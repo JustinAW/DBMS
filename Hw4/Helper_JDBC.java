@@ -58,7 +58,40 @@ public class Helper_JDBC
         // or 1000000 to get milliseconds
         long duration = (end_time - start_time);
         System.out.println(
-                "Done! Time: " + (duration/1000000) + " milliseconds");
+                "Done! Time: " + (duration/1000000) + " milliseconds\n");
+        return duration;
+    }
+
+    public long runSelect (Connection db_conn, boolean prim) throws SQLException
+    {
+        System.out.println("Starting timed select test...");
+        long start_time = System.nanoTime();
+
+        int start, end;
+        String sql = null;
+        for (int loops = 0; loops < 100; loop++) {
+            start = loops * 400;
+            end = (loops+1) * 400;
+
+            if (prim) {
+                sql = "SELECT * FROM HW4_DATA WHERE number1>="
+                    + Integer.toString(start)
+                    + " AND number1<"
+                    + Integer.toString(end)
+                    + ";";
+            } else {
+                sql = "SELECT * FROM HW4_DATA WHERE number2>="
+                    + Integer.toString(start)
+                    + " AND number2<"
+                    + Integer.toString(end)
+                    + ";";
+            }
+        }
+
+        long end_time = System.nanoTime();
+        long duration = (end_time - start_time);
+        System.out.println(
+                "Done! Time: " + (duration/1000000) + " milliseconds\n");
         return duration;
     }
 
