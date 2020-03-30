@@ -66,10 +66,11 @@ public class Helper_JDBC
     {
         System.out.println("Starting timed select test...");
         long start_time = System.nanoTime();
+        statemnt = db_conn.createStatement();
 
         int start, end;
         String sql = null;
-        for (int loops = 0; loops < 100; loop++) {
+        for (int loops = 0; loops < 100; loops++) {
             start = loops * 400;
             end = (loops+1) * 400;
 
@@ -86,9 +87,24 @@ public class Helper_JDBC
                     + Integer.toString(end)
                     + ";";
             }
+            try {
+                statemnt.executeQuery(sql);
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+                if (statemnt != null) {
+                    statemnt.close();
+                }
+                return -1;
+            }
+        }
+
+        if (statemnt != null) {
+            statemnt.close();
         }
 
         long end_time = System.nanoTime();
+        //divide by 1000000000 to get seconds.
+        // or 1000000 to get milliseconds
         long duration = (end_time - start_time);
         System.out.println(
                 "Done! Time: " + (duration/1000000) + " milliseconds\n");
@@ -111,29 +127,31 @@ public class Helper_JDBC
     /**
      * Writes the time duration to a file
      */
-    public void timeToFile (long duration)
+    public void timeToFile (long duration, String fname)
     {
+        System.out.println("Writing time to file...");
         /** convert time to seconds */
         duration /= 1000000;
         String entry = Long.toString(duration);
-        entry += ",\n";
-        openFile();
+        entry += "\n";
+        openFile(fname);
         try {
             FWRITER.append(entry);
         } catch (IOException e) {
             e.printStackTrace();
         }
         closeFile();
+        System.out.println("Done.");
     }
 
     /**
      * Uses FileWriter to open a file with the append setting
      * toggled to true so that a new entry may be added to the end
      */
-    private static void openFile ()
+    private static void openFile (String fname)
     {
         try {
-            FWRITER = new FileWriter("times.dat", true);
+            FWRITER = new FileWriter(fname, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

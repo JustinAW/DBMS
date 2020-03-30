@@ -27,14 +27,15 @@ public class Main_JDBC
         Scanner s = new Scanner(System.in);
         int choice = 0;
 
-        while (choice != 5) {
+        while (choice != 6) {
             System.out.println("What would you like to do?");
             System.out.println(
                       "1: Run timed insertion test\n"
                     + "2: Create TEST Table w/o primary key\n"
                     + "3: Create TEST Table w/primary key\n"
                     + "4: Drop TEST Table\n"
-                    + "5: Exit");
+                    + "5: Run timed selection test on HW4_DATA\n"
+                    + "6: Exit");
             choice = s.nextInt();
             s.nextLine(); // clear the newline from the buffer
 
@@ -70,14 +71,14 @@ public class Main_JDBC
                             System.out.println("Error during insertion");
                             break;
                         }
-                        helper.timeToFile(time_result);
+                        if (prim == 1) {
+                            helper.timeToFile(time_result, "primtime.dat");
+                        } else {
+                            helper.timeToFile(time_result, "nonprimtime.dat");
+                        }
                         if (runs > 1) {
                             helper.dropTable(db_conn);
-                            if (prim == 1) {
-                                helper.createTable(db_conn, true);
-                            } else {
-                                helper.createTable(db_conn, false);
-                            }
+                            helper.createTable(db_conn, prim == 1);
                         }
                     }
                 }
@@ -90,6 +91,35 @@ public class Main_JDBC
             } else if (choice == 4) {
                 /** Drop Table TEST_WEIGLE */
                 helper.dropTable(db_conn);
+            } else if (choice == 5) {
+                long time_result;
+                int runs = 0;
+                int prim = 0;
+
+                System.out.println(
+                        "How many times do you want to run the test?");
+                runs = s.nextInt();
+                s.nextLine(); // clear newline from buffer
+
+                System.out.println("Primary key test?\n1: yes\n0: no");
+                prim = s.nextInt();
+                s.nextLine(); // clear newline from buffer
+
+                if (runs >= 1) {
+                    for (; runs > 0; runs--) {
+                        time_result = 0;
+                        time_result = helper.runSelect(db_conn, prim == 1);
+                        if (time_result < 0) {
+                            System.out.println("Error during insertion");
+                            break;
+                        }
+                        if (prim == 1) {
+                            helper.timeToFile(time_result, "sprimtime.dat");
+                        } else {
+                            helper.timeToFile(time_result, "snonprimtime.dat");
+                        }
+                    }
+                }
             }
         }
 
