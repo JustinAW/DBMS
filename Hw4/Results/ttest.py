@@ -21,9 +21,9 @@ def get_t (delta, avgp, avgnp):
 
 
 if __name__=="__main__":
-    print("------------------------------------")
-    print("Gathering results for INSERT test...")
-    print("------------------------------------")
+    print("--------------------------")
+    print("Results for INSERT test...")
+    print("--------------------------")
     p = list()
     np = list()
     with open('primtime.csv', 'r') as csvfile:
@@ -55,9 +55,9 @@ if __name__=="__main__":
     t = get_t (delta, avgp, avgnp)
     print("T value:\n", t)
 
-    print("\n------------------------------------")
-    print("Gathering results for SELECT test...")
-    print("------------------------------------")
+    print("\n--------------------------")
+    print("Results for SELECT test...")
+    print("--------------------------")
     sp = list()
     snp = list()
     with open('sprimtime.csv', 'r') as csvfile:
