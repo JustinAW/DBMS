@@ -21,6 +21,9 @@ def get_t (delta, avgp, avgnp):
 
 
 if __name__=="__main__":
+    print("------------------------------------")
+    print("Gathering results for INSERT test...")
+    print("------------------------------------")
     p = list()
     np = list()
     with open('primtime.csv', 'r') as csvfile:
@@ -51,3 +54,37 @@ if __name__=="__main__":
 
     t = get_t (delta, avgp, avgnp)
     print("T value:\n", t)
+
+    print("\n------------------------------------")
+    print("Gathering results for SELECT test...")
+    print("------------------------------------")
+    sp = list()
+    snp = list()
+    with open('sprimtime.csv', 'r') as csvfile:
+        f = csv.reader(csvfile, delimiter='\r')
+        f.__next__() #skip header
+        for row in f:
+            sp.append(int(row[0]))
+        csvfile.close()
+    with open('snonprimtime.csv', 'r') as csvfile:
+        f = csv.reader(csvfile, delimiter='\r')
+        f.__next__() #skip header
+        for row in f:
+            snp.append(int(row[0]))
+        csvfile.close()
+
+    savgp = get_avg(sp)
+    savgnp = get_avg(snp)
+    print("Average primary times:\n", savgp)
+    print("Average non primary times:\n", savgnp, "\n")
+
+    sstddevp = stats.stdev(sp)
+    sstddevnp = stats.stdev(snp)
+    print("Std dev primary times:\n", sstddevp)
+    print("Std dev non primary times:\n", sstddevnp, "\n")
+
+    sdelta = get_delta(sp, snp, sstddevp, sstddevnp)
+    print("Delta_xx primary and non primary times:\n", sdelta, "\n")
+
+    st = get_t (sdelta, savgp, savgnp)
+    print("T value:\n", st)
