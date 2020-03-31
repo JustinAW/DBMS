@@ -62,6 +62,10 @@ public class Helper_JDBC
         return duration;
     }
 
+    /**
+     * Run a timed selection test of 100 different selects
+     * @return duration it takes to do 100 selects
+     */
     public long runSelect (Connection db_conn, boolean prim) throws SQLException
     {
         System.out.println("Starting timed select test...");

@@ -66,6 +66,7 @@ public class Main_JDBC
                 if (runs >= 1) {
                     for (; runs > 0; runs--) {
                         time_result = 0;
+                        /** Run the insertion test */
                         time_result = helper.runInsertion(db_conn);
                         if (time_result < 0) {
                             System.out.println("Error during insertion");
@@ -108,6 +109,7 @@ public class Main_JDBC
                 if (runs >= 1) {
                     for (; runs > 0; runs--) {
                         time_result = 0;
+                        /** Run the selection test */
                         time_result = helper.runSelect(db_conn, prim == 1);
                         if (time_result < 0) {
                             System.out.println("Error during insertion");
