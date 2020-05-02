@@ -4,62 +4,151 @@ import java.util.*;
 
 public class Helper_JDBC
 {
-    private static final String RANDCHARS = ""
-        + "CuWMOQvP7gWR9a4oAbsbsvaW2l2xLhLAlqtrymNTkOuQjq26fW63I0eY6B0YchZbD"
-        + "R6fyxqaKJ4oAbsbsvaW2l2x9mS2TZpstrySgBLPgVy6s9V71VhLAlqEl8j0laZYNn"
-        + "9iK4FcHaupB8sdY9hEH7laWJULZm69tacnXlfSaVpimy6JrsMPj1yVIpp2EqyboCL";
-    private static FileWriter FWRITER;
     private Statement statemnt = null;
 
     /**
-     * Run a timed insertion test of 25000 random entries
-     * @return duration it takes to do 25000 inserts
+     * Runs insert statements to populate the database
      */
-    public long runInsertion (Connection db_conn) throws SQLException
+    public void runInsertion (Connection db_conn) throws SQLException
     {
-        System.out.println("Starting timed insertion test...");
-        long start_time = System.nanoTime();
-        Random rng = new Random();
-        statemnt = db_conn.createStatement();
-        String sql = null;
-        String str = null;
+        System.out.println("Inserting into tables...");
+        Statement statemnt = db_conn.createStatement();
 
-        /** Run 25,000 random insertions */
-        for (int loops = 0; loops < 25000; loops++) {
-            sql = "INSERT INTO TEST_WEIGLE"
-                + "(Integer1, Integer2, Statstr, Varstr, Dble)"
-                + "VALUES (";
-            str = Integer.toString(loops);
-            sql += str + ",";
-            sql += str + ",";
-            str = getRandstr(rng, 10);
-            sql += "'" + str + "',";
-            str = getRandstr(rng, 30);
-            sql += "'" + str + "',";
-            str = Double.toString(rng.nextDouble());
-            sql += str + ");";
-            try {
-                statemnt.executeUpdate(sql);
-            } catch (SQLException sqle) {
-                sqle.printStackTrace();
-                if (statemnt != null) {
-                    statemnt.close();
-                }
-                return -1;
-            }
+        String sql = ""
+                + "INSERT INTO PERSON"
+                + " (login, email, password)"
+                + "VALUES"
+                + " ('dingding','dingding@mail.com', 'bestpw'),"
+                + " ('beepboop','beepboop@mail.com', 'yermum'),"
+                + " ('pickless','pickless@mail.com', 'pickle'),"
+                + " ('sirbarty','sirbarty@mail.com', 'bartyy'),"
+                + " ('sk8erboi','sk8erboi@mail.com', 'sk8erb');";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+        }
+
+        sql = ""
+                + "INSERT INTO PLAYER"
+                + " (id, Per_login)"
+                + "VALUES"
+                + " (0, 'dingding'),"
+                + " (1, 'beepboop'),"
+                + " (2, 'pickless'),"
+                + " (3, 'sirbarty'),"
+                + " (4, 'sk8erboi');";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sql = ""
+                + "INSERT INTO LOCATION"
+                + " (id, area_Type)"
+                + "VALUES"
+                + " (0, 'forest'),"
+                + " (1, 'mountain'),"
+                + " (2, 'river'),"
+                + " (3, 'valley'),"
+                + " (4, 'swamp'),"
+                + " (1234, 'hut');";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+        }
+
+        sql = ""
+                + "INSERT INTO CHARACTR"
+                + " (name, strength, stamina, curHP, maxHP, Loc_id)"
+                + "VALUES"
+                + " ('dunkers', 55, 55, 100, 200, 1234),"
+                + " ('tibbers', 75, 75, 100, 200, 0),"
+                + " ('fisskyy', 40, 40, 100, 200, 1),"
+                + " ('shoresy', 41, 41, 100, 200, 2),"
+                + " ('jonesyy', 87, 87, 100, 200, 1234),"
+                + " ('bonbons', 20, 20, 100, 250, 4),"
+                + " ('pepegaa', 39, 39, 234, 235, 1234);";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+        }
+
+        sql = ""
+                + "INSERT INTO ITEM"
+                + " (id, weight, volume, Loc_id)"
+                + "VALUES"
+                + " (0, 5, 5, 0), "
+                + " (1, 15, 5, 0), "
+                + " (2, 5, 15, 0), "
+                + " (3, 10, 5, 0), "
+                + " (4, 10, 10, 0); ";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sql = ""
+                + "INSERT INTO CONTAINER"
+                + " (ID, weightLim, volumeLim, item_id, weight, volume)"
+                + "VALUES"
+                + " (0, 10, 10, 0, 5, 5),"
+                + " (1, 10, 10, 1, 5, 5),"
+                + " (2, 15, 15, 2, 10, 10),"
+                + " (4, 15, 15, 3, 10, 10),"
+                + " (5, 20, 20, 4, 15, 15);";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sql = ""
+                + "INSERT INTO ABILITY"
+                + " (id, type, exectime, targetstat, benepenal,"
+                + "effectrate, effectduration)"
+                + "VALUES"
+                + " (0, 'fire', 5, 'strength', true, 1.5, 10),"
+                + " (1, 'water', 5, 'strength', true, 1.5, 10);";
+
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sql = ""
+                + "INSERT INTO WEAPON"
+                + " (id, equiploc, item_id, abil_id, weight, volume)"
+                + "VALUES"
+                + " (0, 2, 0, 0, 5, 5),"
+                + " (1, 2, 1, 0, 10, 10), "
+                + " (2, 3, 2, 0, 5, 5),"
+                + " (3, 4, 3, 0, 10, 10);";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        sql = ""
+                + "INSERT INTO ARMOR"
+                + " (id, protection, wearloc, item_id, weight, volume)"
+                + "VALUES"
+                + " (0, 2, 0, 0, 5, 5),"
+                + " (1, 2, 1, 2, 10, 10), "
+                + " (2, 3, 2, 2, 5, 5),"
+                + " (3, 4, 3, 1, 10, 10);";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         if (statemnt != null) {
             statemnt.close();
         }
-
-        long end_time = System.nanoTime();
-        //divide by 1000000000 to get seconds.
-        // or 1000000 to get milliseconds
-        long duration = (end_time - start_time);
-        System.out.println(
-                "Done! Time: " + (duration/1000000) + " milliseconds\n");
-        return duration;
     }
 
     /**
@@ -102,76 +191,20 @@ public class Helper_JDBC
             }
         }
 
-        if (statemnt != null) {
-            statemnt.close();
-        }
-
         long end_time = System.nanoTime();
         //divide by 1000000000 to get seconds.
         // or 1000000 to get milliseconds
         long duration = (end_time - start_time);
         System.out.println(
                 "Done! Time: " + (duration/1000000) + " milliseconds\n");
+
+        if (statemnt != null) {
+            statemnt.close();
+        }
+
         return duration;
     }
 
-    /**
-     * Get a random string of characters from RANDCHARS String
-     */
-    public String getRandstr(Random rng, int length)
-    {
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++)
-        {
-            text[i] = RANDCHARS.charAt(rng.nextInt(RANDCHARS.length()));
-        }
-        return new String(text);
-    }
-
-    /**
-     * Writes the time duration to a file
-     */
-    public void timeToFile (long duration, String fname)
-    {
-        System.out.println("Writing time to file...");
-        /** convert time to seconds */
-        duration /= 1000000;
-        String entry = Long.toString(duration);
-        entry += "\n";
-        openFile(fname);
-        try {
-            FWRITER.append(entry);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        closeFile();
-        System.out.println("Done.");
-    }
-
-    /**
-     * Uses FileWriter to open a file with the append setting
-     * toggled to true so that a new entry may be added to the end
-     */
-    private static void openFile (String fname)
-    {
-        try {
-            FWRITER = new FileWriter(fname, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Closes the file opened using openFile
-     */
-    private static void closeFile ()
-    {
-        try {
-            FWRITER.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Create a connection to the database
@@ -183,32 +216,152 @@ public class Helper_JDBC
     }
 
     /**
-     * Create TEST table in database with or without a primary key
+     * Create all necessary tables in the database
      */
-    public void createTable (
-        Connection db_conn, boolean primary) throws SQLException
+    public void createTables ( Connection db_conn) throws SQLException
     {
-        System.out.println("Creating TEST table...");
-        String sql;
+        System.out.println("Creating tables...");
         statemnt = db_conn.createStatement();
-        sql = "CREATE TABLE TEST_WEIGLE"
-            + "(Integer1   INT         NOT NULL,"
-            +  "Integer2   INT         NOT NULL,"
-            +  "Statstr    CHAR(10)    NOT NULL,"
-            +  "Varstr     VARCHAR(30) NOT NULL,"
-            +  "Dble       DOUBLE      NOT NULL";
-        if (primary) {
-                sql += ", PRIMARY KEY(Integer1) );";
-        } else {
-            sql += ");";
-        }
+
+        String sql = ""
+            + "CREATE TABLE PERSON"
+            + " (login      VARCHAR(40) NOT NULL,"
+            + "  email      VARCHAR(40) NOT NULL,"
+            + "  password   VARCHAR(40) NOT NULL,"
+            + " PRIMARY KEY(login),"
+            + " UNIQUE(email) );";
         try {
             statemnt.executeUpdate(sql);
-        } catch (SQLException sqle) {
+        } catch (SQLException e) {
             sqle.printStackTrace();
-            return;
         }
-        System.out.println("Table created");
+
+        sql = ""
+            + "CREATE TABLE PLAYER"
+            + " (id         INT         NOT NULL,"
+            + "  Per_login  VARCHAR(40) NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Per_login) REFERENCES PERSON (login) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE CHARACTR"
+            + "  (name      VARCHAR(40) NOT NULL,"
+            + "   strength  INT         NOT NULL,"
+            + "   stamina   INT         NOT NULL,"
+            + "   curHP     INT         NOT NULL,"
+            + "   maxHP     INT         NOT NULL,"
+            + "   Loc_id    INT         NOT NULL,"
+            + " PRIMARY KEY (name),"
+            + " FOREIGN KEY (Loc_id) REFERENCES LOCATION (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE CONTROLS"
+            + " (Play_id        INT             NOT NULL,"
+            + "  Char_name      VARCHAR(40)     NOT NULL,"
+            + " FOREIGN KEY (Player_id) REFERENCES PLAYER (id),"
+            + " FOREIGN KEY (Char_id) REFERENCES CHARACTR (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE LOCATION"
+            + " (id             INT             NOT NULL,"
+            + "  area_type      VARCHAR(20)     NOT NULL,"
+            + " PRIMARY KEY(id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE ABILITY"
+            + " (id                 INT            NOT NULL,"
+            + "  type               VARCHAR(10)    NOT NULL,"
+            + "  execTime           INT            NOT NULL,"
+            + "  targetStat         VARCHAR(10)    NOT NULL,"
+            + "  benePenal          BOOL           NOT NULL,"
+            + "  effectRate         DOUBLE(3,2)    NOT NULL,"
+            + "  effectDuration     INT            NOT NULL,"
+            + " PRIMARY KEY (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE ITEM"
+            + " (id        INT         NOT NULL,"
+            + "  weight    INT         NOT NULL,"
+            + "  volume    INT         NOT NULL,"
+            + "  Loc_id    INT         NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Loc_id) REFERENCES LOCATION (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE CONTAINER"
+            + " (id         INT        NOT NULL,"
+            + "  weightLim  INT        NOT NULL,"
+            + "  volumeLim  INT        NOT NULL,"
+            + "  Item_id    INT        NOT NULL,"
+            + " PRIMARY KEY(id),"
+            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE WEAPON"
+            + " (id         INT        NOT NULL,"
+            + "  equipLoc   INT        NOT NULL,"
+            + "  Item_id    INT        NOT NULL,"
+            + "  Abil_id    INT        NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id),"
+            + " FOREIGN KEY (Abil_id) REFERENCES ABILITY (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        sql = ""
+            + "CREATE TABLE ARMOR"
+            + " (id            INT        NOT NULL,"
+            + "  protection    INT        NOT NULL,"
+            + "  wearLoc       INT        NOT NULL,"
+            + "  Item_id       INT        NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id) );";
+        try {
+            statemnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            sqle.printStackTrace();
+        }
+
+        System.out.println("Tables created");
+
         if (statemnt != null) {
             statemnt.close();
         }
@@ -218,12 +371,13 @@ public class Helper_JDBC
      * Drop TEST table
      * @throws SQLException
      */
-    public void dropTable (Connection db_conn) throws SQLException
+    public void dropTable (Connection db_conn,
+            String tableName) throws SQLException
     {
-        System.out.println("Dropping TEST table...");
+        System.out.println("Dropping table" + tableName + "...");
         String sql;
         statemnt = db_conn.createStatement();
-        sql = "DROP TABLE TEST_WEIGLE;";
+        sql = "DROP TABLE " + tableName+ ";";
         try {
             statemnt.executeUpdate(sql);
         } catch (SQLException sqle) {

@@ -33,98 +33,23 @@ public class Main_JDBC
         while (choice != 6) {
             System.out.println("What would you like to do?");
             System.out.println(
-                      "1: Run timed insertion test\n"
-                    + "2: Create TEST Table w/o primary key\n"
-                    + "3: Create TEST Table w/primary key\n"
-                    + "4: Drop TEST Table\n"
-                    + "5: Run timed selection test on HW4_DATA\n"
+                      "1: Create tables in database\n"
+                    + "2: Run inserts to populate database\n"
+                    + "3: Open GUI view 1\n"
+                    + "4: Open GUI view 2\n"
+                    + "5: Open GUI view 3\n"
                     + "6: Exit");
             choice = s.nextInt();
             s.nextLine(); // clear the newline from the buffer
 
             if (choice == 1) {
-                long time_result;
-                int runs = 0;
-                int prim = 0;
-
-                System.out.println(
-                        "How many times do you want to run the test?");
-                runs = s.nextInt();
-                s.nextLine(); // clear newline from buffer
-
-                System.out.println("Primary key test?\n1: yes\n0: no");
-                prim = s.nextInt();
-                s.nextLine(); // clear newline from buffer
-
-                if (prim == 1) {
-                    /** Create Table TEST_WEIGLE w/primary key*/
-                    helper.createTable(db_conn, true);
-                } else if (prim == 0) {
-                    /** Create Table TEST_WEIGLE w/o primary key*/
-                    helper.createTable(db_conn, false);
-                } else {
-                    break;
-                }
-
-                if (runs >= 1) {
-                    for (; runs > 0; runs--) {
-                        time_result = 0;
-                        /** Run the insertion test */
-                        time_result = helper.runInsertion(db_conn);
-                        if (time_result < 0) {
-                            System.out.println("Error during insertion");
-                            break;
-                        }
-                        if (prim == 1) {
-                            helper.timeToFile(time_result, "primtime.dat");
-                        } else {
-                            helper.timeToFile(time_result, "nonprimtime.dat");
-                        }
-                        if (runs > 1) {
-                            helper.dropTable(db_conn);
-                            helper.createTable(db_conn, prim == 1);
-                        }
-                    }
-                }
+                createTables(db_conn);
             } else if (choice == 2) {
-                /** Create Table TEST_WEIGLE w/o primary key*/
-                helper.createTable(db_conn, false);
+                runInsertion(db_conn);
             } else if (choice == 3) {
-                /** Create Table TEST_WEIGLE w/primary key*/
-                helper.createTable(db_conn, true);
             } else if (choice == 4) {
-                /** Drop Table TEST_WEIGLE */
-                helper.dropTable(db_conn);
+                Swing_GUI gui = new Swing_GUI();
             } else if (choice == 5) {
-                long time_result;
-                int runs = 0;
-                int prim = 0;
-
-                System.out.println(
-                        "How many times do you want to run the test?");
-                runs = s.nextInt();
-                s.nextLine(); // clear newline from buffer
-
-                System.out.println("Primary key test?\n1: yes\n0: no");
-                prim = s.nextInt();
-                s.nextLine(); // clear newline from buffer
-
-                if (runs >= 1) {
-                    for (; runs > 0; runs--) {
-                        time_result = 0;
-                        /** Run the selection test */
-                        time_result = helper.runSelect(db_conn, prim == 1);
-                        if (time_result < 0) {
-                            System.out.println("Error during insertion");
-                            break;
-                        }
-                        if (prim == 1) {
-                            helper.timeToFile(time_result, "sprimtime.dat");
-                        } else {
-                            helper.timeToFile(time_result, "snonprimtime.dat");
-                        }
-                    }
-                }
             }
         }
 
