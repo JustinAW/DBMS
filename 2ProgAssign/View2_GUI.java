@@ -2,13 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 
-public class Swing_GUI
+public class View2_GUI
 {
     private JList characterList;
     private JButton updateBtn;
-    private JTable characterTable;
+    private JTable charTable;
 
-    Swing_GUI()
+    View2_GUI()
     {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,9 +32,18 @@ public class Swing_GUI
 
     private void initCharList (JFrame window)
     {
+        String[] leData = {"thing1", "thing2", "thing3", "thing4"};
+
         JPanel charListPanel = new JPanel();
         charListPanel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-        characterList = new JList();
+        DefaultListModel charListModel = new DefaultListModel();
+
+        for (int i = 0; i < leData.length; i++) {
+            charListModel.addElement(leData[i]);
+        }
+
+        characterList = new JList(charListModel);
+
         characterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         charListPanel.add(characterList);
         window.add(charListPanel, BorderLayout.NORTH);
@@ -53,7 +62,7 @@ public class Swing_GUI
 
     private void updateCharTable (Object[][] data)
     {
-        DefaultTableModel model = (DefaultTableModel)characterTable.getModel();
+        DefaultTableModel model = (DefaultTableModel)charTable.getModel();
 
         if (model.getRowCount() > 0) {
             model.removeRow(0);
@@ -61,38 +70,33 @@ public class Swing_GUI
 
         model.addRow(data[0]);
 
-        characterTable.repaint();
+        charTable.repaint();
     }
 
     private void initCharTable (JFrame window)
     {
         Object[] columnNames = {
             "Name",
-            "Character_ID",
             "Strength",
             "Stamina",
-            "Cur_HP",
-            "Max_HP",
-            "Loc_ID"
+            "Cur HP",
+            "Max HP",
+            "Loc ID"
         };
 
         Object[][] data = {};
 
-        characterTable = new JTable(new DefaultTableModel(data, columnNames));
-        characterTable.getColumnModel().getColumn(0).setPreferredWidth(100);
-        characterTable.getColumnModel().getColumn(1).setPreferredWidth(100);
-        characterTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-        characterTable.getColumnModel().getColumn(3).setPreferredWidth(100);
-        characterTable.getColumnModel().getColumn(4).setPreferredWidth(100);
-        characterTable.getColumnModel().getColumn(5).setPreferredWidth(100);
-        characterTable.getColumnModel().getColumn(6).setPreferredWidth(100);
+        charTable = new JTable(new DefaultTableModel(data, columnNames));
+        for (int i = 0; i < charTable.getColumnModel().getColumnCount(); i++) {
+            charTable.getColumnModel().getColumn(i).setPreferredWidth(100);
+        }
 
         JPanel tblPanel = new JPanel();
         tblPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
         tblPanel.setLayout(new GridLayout(0, 1));
 
-        tblPanel.add(characterTable.getTableHeader(), BorderLayout.NORTH);
-        tblPanel.add(characterTable, BorderLayout.CENTER);
+        tblPanel.add(charTable.getTableHeader(), BorderLayout.NORTH);
+        tblPanel.add(charTable, BorderLayout.CENTER);
 
         window.add(tblPanel, BorderLayout.SOUTH);
     }
@@ -101,7 +105,7 @@ public class Swing_GUI
     {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Swing_GUI();
+                new View2_GUI();
             }
         });
     }
