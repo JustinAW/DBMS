@@ -1,21 +1,23 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.table.DefaultTableModel;
 
 public class View2_GUI
 {
+    private JFrame window;
     private JList<Object> characterList;
     private JButton updateBtn;
     private JTable charTable;
 
     View2_GUI()
     {
-        JFrame window = new JFrame();
+        window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        initCharList(window);
-        initUpdateBtn(window);
-        initCharTable(window);
+        initCharList();
+        initUpdateBtn();
+        initCharTable();
 
         Object[][] data = {
             {"Adam", 0, 95, 20, 92, 100, 0}
@@ -25,11 +27,6 @@ public class View2_GUI
 
 
 
-        int n = JOptionPane.showConfirmDialog(
-            window,
-            "Are you sure you want to update the database?",
-            "Confirm choice",
-            JOptionPane.YES_NO_OPTION);
 
 
 
@@ -40,7 +37,7 @@ public class View2_GUI
         window.setVisible(true);
     }
 
-    private void initCharList (JFrame window)
+    private void initCharList ()
     {
         String[] leData = {
             "thing1",
@@ -68,7 +65,7 @@ public class View2_GUI
         window.add(scrollPane, BorderLayout.NORTH);
     }
 
-    private void initUpdateBtn (JFrame window)
+    private void initUpdateBtn ()
     {
         JPanel btnPanel = new JPanel();
         btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -76,7 +73,28 @@ public class View2_GUI
         updateBtn = new JButton("Update");
         btnPanel.add(updateBtn);
 
+        updateBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                updateConfirm();
+            }
+        });
+
         window.add(btnPanel, BorderLayout.WEST);
+    }
+
+    private void updateConfirm ()
+    {
+        int n = JOptionPane.showConfirmDialog(
+            window,
+            "Are you sure you want to update the database?",
+            "Confirm choice",
+            JOptionPane.YES_NO_OPTION);
+
+        if (n == 0) {
+            System.out.println("Said yes");
+        } else if (n == 1) {
+            System.out.println("Said no");
+        }
     }
 
     private void updateCharTable (Object[][] data)
@@ -92,7 +110,7 @@ public class View2_GUI
         charTable.repaint();
     }
 
-    private void initCharTable (JFrame window)
+    private void initCharTable ()
     {
         Object[] columnNames = {
             "name",
