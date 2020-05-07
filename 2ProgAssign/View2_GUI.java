@@ -4,7 +4,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class View2_GUI
 {
-    private JList characterList;
+    private JList<Object> characterList;
     private JButton updateBtn;
     private JTable charTable;
 
@@ -23,6 +23,16 @@ public class View2_GUI
 
         updateCharTable(data);
 
+
+
+        int n = JOptionPane.showConfirmDialog(
+            window,
+            "Are you sure you want to update the database?",
+            "Confirm choice",
+            JOptionPane.YES_NO_OPTION);
+
+
+
         // TODO JDialog for confirmation of update
         // Just have update read from table???
 
@@ -32,21 +42,30 @@ public class View2_GUI
 
     private void initCharList (JFrame window)
     {
-        String[] leData = {"thing1", "thing2", "thing3", "thing4"};
+        String[] leData = {
+            "thing1",
+            "thing2",
+            "thing3",
+            "thing4",
+            "thing5",
+            "thing6",
+            "thing7",
+            "thing8",
+            "thing9",
+        };
 
-        JPanel charListPanel = new JPanel();
-        charListPanel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-        DefaultListModel charListModel = new DefaultListModel();
-
+        DefaultListModel<Object> charListModel = new DefaultListModel<Object>();
         for (int i = 0; i < leData.length; i++) {
             charListModel.addElement(leData[i]);
         }
 
-        characterList = new JList(charListModel);
-
+        characterList = new JList<Object>(charListModel);
         characterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        charListPanel.add(characterList);
-        window.add(charListPanel, BorderLayout.NORTH);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(characterList);
+
+        window.add(scrollPane, BorderLayout.NORTH);
     }
 
     private void initUpdateBtn (JFrame window)
@@ -76,12 +95,12 @@ public class View2_GUI
     private void initCharTable (JFrame window)
     {
         Object[] columnNames = {
-            "Name",
-            "Strength",
-            "Stamina",
-            "Cur HP",
-            "Max HP",
-            "Loc ID"
+            "name",
+            "strength",
+            "stamina",
+            "curHP",
+            "maxHP",
+            "Loc_id"
         };
 
         Object[][] data = {};
