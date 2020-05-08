@@ -167,9 +167,9 @@ public class Helper_JDBC
         String sql = null;
         statemnt = db_conn.createStatement();
 
-        sql = "SELECT * FROM CHARACTR WHERE name ="
+        sql = "SELECT * FROM CHARACTR WHERE name ='"
             + charName
-            + ";";
+            + "';";
 
         try {
             rs = statemnt.executeQuery(sql);
@@ -222,6 +222,7 @@ public class Helper_JDBC
                 System.out.println("got " + rs.getString("name"));
             }
         }
+        charNames = new String[charNameList.size()];
         charNames = charNameList.toArray(charNames);
         return charNames;
     }

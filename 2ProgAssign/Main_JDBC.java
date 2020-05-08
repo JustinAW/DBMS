@@ -5,11 +5,11 @@ import javax.swing.*;
 public class Main_JDBC
 {
     private static final String DB_URL = ""
-        + "jdbc:mysql://192.168.0.38:3306/dbms_pa2"
-        + "?useTimezone=true"
-        + "&serverTimezone=EST";
-    private static final String USERNAME = "jw6858";
-    private static final String PASSWORD = "lePassword";
+        + "jdbc:mysql://db.cs.ship.edu:3306/csc371_26";
+      //  + "?useTimezone=true"
+//        + "?serverTimezon=EST";
+    private static final String USERNAME = "csc371_26";
+    private static final String PASSWORD = "Password26";
     public static Connection db_conn = null;
 
     public static void main (String args[]) throws SQLException
@@ -81,7 +81,7 @@ public class Main_JDBC
     private static boolean activateJDBC()
     {
         try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
         }
         catch (SQLException sqle) {
             sqle.printStackTrace();
