@@ -4,6 +4,11 @@ import java.util.*;
 
 public class Helper_JDBC
 {
+    private Connection db_conn;
+    Helper_JDBC(Connection db_conn)
+    {
+        this.db_conn = db_conn;
+    }
     private Statement statemnt = null;
 
     /**
@@ -51,23 +56,27 @@ public class Helper_JDBC
             + "VALUES"
             + " ('dunkers', 55, 55, 100, 200, 1234),"
             + " ('tibbers', 75, 75, 100, 200, 0),"
-            + " ('fisskyy', 40, 40, 100, 200, 1),"
+            + " ('fisskyy', 40, 40, 80, 200, 1),"
             + " ('shoresy', 41, 41, 100, 200, 2),"
-            + " ('jonesyy', 87, 87, 100, 200, 1234),"
-            + " ('bonbons', 20, 20, 100, 250, 4),"
+            + " ('jonesyy', 37, 55, 90, 200, 1234),"
+            + " ('toblero', 97, 77, 100, 200, 1234),"
+            + " ('jabbers', 87, 27, 85, 200, 1234),"
+            + " ('bonbons', 20, 20, 95, 250, 4),"
             + " ('pepegaa', 39, 39, 234, 235, 1234);";
         execSQLUpdate(statemnt, sql);
 
         sql = "INSERT INTO CONTROLS"
             + " (Play_id, Char_name)"
             + "VALUES"
-            + " (0, 'dunkers')"
-            + " (1, 'tibbers')"
-            + " (2, 'fisskyy')"
-            + " (2, 'shoresy')"
-            + " (3, 'jonesyy')"
-            + " (4, 'bonbons')"
-            + " (4, 'pepegaa')"
+            + " (0, 'dunkers'),"
+            + " (0, 'tibbers'),"
+            + " (0, 'fisskyy'),"
+            + " (0, 'shoresy'),"
+            + " (0, 'jonesyy'),"
+            + " (0, 'jabbers'),"
+            + " (0, 'toblero'),"
+            + " (0, 'bonbons'),"
+            + " (0, 'pepegaa');";
         execSQLUpdate(statemnt, sql);
 
         sql = "INSERT INTO ITEM"
@@ -77,22 +86,30 @@ public class Helper_JDBC
             + " (1, 15, 5, 0),"
             + " (2, 5, 15, 0),"
             + " (3, 10, 5, 0),"
-            + " (4, 10, 10, 0);";
+            + " (4, 10, 5, 0),"
+            + " (5, 10, 5, 0),"
+            + " (6, 10, 5, 0),"
+            + " (7, 10, 5, 0),"
+            + " (8, 10, 5, 0),"
+            + " (9, 10, 5, 0),"
+            + " (10, 10, 5, 0),"
+            + " (11, 10, 5, 0),"
+            + " (12, 10, 10, 0);";
         execSQLUpdate(statemnt, sql);
 
         sql = "INSERT INTO CONTAINER"
-            + " (ID, weightLim, volumeLim, item_id, weight, volume)"
+            + " (id, weightLim, volumeLim, Item_id)"
             + "VALUES"
-            + " (0, 10, 10, 0, 5, 5),"
-            + " (1, 10, 10, 1, 5, 5),"
-            + " (2, 15, 15, 2, 10, 10),"
-            + " (4, 15, 15, 3, 10, 10),"
-            + " (5, 20, 20, 4, 15, 15);";
+            + " (0, 10, 10, 0),"
+            + " (1, 10, 10, 1),"
+            + " (2, 15, 15, 2),"
+            + " (4, 15, 15, 3),"
+            + " (5, 20, 20, 4);";
         execSQLUpdate(statemnt, sql);
 
         sql = "INSERT INTO ABILITY"
-            + " (id, type, exectime, targetstat, benepenal,"
-            + "effectrate, effectduration)"
+            + " (id, type, execTime, targetStat, benePenal,"
+            + "effectRate, effectDuration)"
             + "VALUES"
             + " (0, 'fire', 5, 'strength', true, 1.5, 10),"
             + " (1, 'water', 5, 'strength', true, 1.5, 10);";
@@ -101,19 +118,19 @@ public class Helper_JDBC
         sql = "INSERT INTO WEAPON"
             + " (id, equipLoc, Item_id, Abil_id)"
             + "VALUES"
-            + " (0, 2, 0, 0, 5, 5),"
-            + " (1, 2, 1, 0, 10, 10), "
-            + " (2, 3, 2, 0, 5, 5),"
-            + " (3, 4, 3, 0, 10, 10);";
+            + " (0, 2, 5, 0),"
+            + " (1, 2, 6, 0), "
+            + " (2, 3, 7, 0),"
+            + " (3, 4, 8, 0);";
         execSQLUpdate(statemnt, sql);
 
         sql = "INSERT INTO ARMOR"
-            + " (id, protection, wearloc, item_id, weight, volume)"
+            + " (id, protection, wearLoc, Item_id)"
             + "VALUES"
-            + " (0, 2, 0, 0, 5, 5),"
-            + " (1, 2, 1, 2, 10, 10), "
-            + " (2, 3, 2, 2, 5, 5),"
-            + " (3, 4, 3, 1, 10, 10);";
+            + " (0, 2, 0, 9),"
+            + " (1, 2, 1, 10), "
+            + " (2, 3, 2, 11),"
+            + " (3, 4, 3, 12);";
         execSQLUpdate(statemnt, sql);
 
         if (statemnt != null) {
@@ -121,68 +138,92 @@ public class Helper_JDBC
         }
     }
 
-    /**
-     * Run a timed selection test of 100 different selects
-     * @return duration it takes to do 100 selects
-     */
-    public long runSelect (Connection db_conn, boolean prim) throws SQLException
+    public void updateCharAttrs (String[] columnNames, Object[] charInfo) throws SQLException
     {
-        System.out.println("Starting timed select test...");
-        long start_time = System.nanoTime();
+        String sql = null;
+        String sqlEnd = null;
         statemnt = db_conn.createStatement();
 
-        int start, end;
-        String sql = null;
-        for (int loops = 0; loops < 100; loops++) {
-            start = loops * 400;
-            end = (loops+1) * 400;
-
-            if (prim) {
-                sql = "SELECT * FROM HW4_DATA WHERE number1>="
-                    + Integer.toString(start)
-                    + " AND number1<"
-                    + Integer.toString(end)
-                    + ";";
-            } else {
-                sql = "SELECT * FROM HW4_DATA WHERE number2>="
-                    + Integer.toString(start)
-                    + " AND number2<"
-                    + Integer.toString(end)
-                    + ";";
-            }
-            try {
-                statemnt.executeQuery(sql);
-            } catch (SQLException sqle) {
-                sqle.printStackTrace();
-                if (statemnt != null) {
-                    statemnt.close();
-                }
-                return -1;
-            }
+        sql = ""
+            + "UPDATE CHARACTR"
+            + "SET";
+        for (int i = 0; i < columnNames.length; i++) {
+            sqlEnd += " "
+                + columnNames[i] + " = "
+                + charInfo[i] + ",";
         }
+        sqlEnd = sqlEnd.substring(0, sqlEnd.length()-1);
+        sql += sqlEnd
+            + "WHERE name = "
+            + (String) charInfo[0]
+            + ";";
 
-        long end_time = System.nanoTime();
-        //divide by 1000000000 to get seconds.
-        // or 1000000 to get milliseconds
-        long duration = (end_time - start_time);
-        System.out.println(
-                "Done! Time: " + (duration/1000000) + " milliseconds\n");
-
-        if (statemnt != null) {
-            statemnt.close();
-        }
-
-        return duration;
+        execSQLUpdate(statemnt, sql);
     }
 
-
-    /**
-     * Create a connection to the database
-     */
-    public Connection getConnection(
-        String db_url, String user, String pass) throws SQLException
+    public Object[] getCharInfo (String charName) throws SQLException
     {
-        return DriverManager.getConnection(db_url, user, pass);
+        ResultSet rs = null;
+        String sql = null;
+        statemnt = db_conn.createStatement();
+
+        sql = "SELECT * FROM CHARACTR WHERE name ="
+            + charName
+            + ";";
+
+        try {
+            rs = statemnt.executeQuery(sql);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            if (statemnt != null) {
+                statemnt.close();
+            }
+            return null;
+        }
+
+        Object[] attributes = null;
+        List<Object> attrList = new ArrayList<Object>();
+        for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+//            String colName = rs.getMetaData().getColumnName(i);
+            attrList.add(rs.getObject(i));
+        }
+        attributes = attrList.toArray(attributes);
+        return attributes;
+    }
+
+    public String[] getDBCharList(int playID) throws SQLException
+    {
+        ResultSet rs = null;
+        String sql = null;
+        statemnt = db_conn.createStatement();
+
+        sql = "SELECT * FROM CHARACTR chr "
+            + "JOIN CONTROLS cnt "
+            + "ON chr.name = cnt.Char_name "
+            + "WHERE cnt.Play_id = "
+            + String.valueOf(playID)
+            + ";";
+
+        try {
+            rs = statemnt.executeQuery(sql);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            if (statemnt != null) {
+                statemnt.close();
+            }
+            return null;
+        }
+
+        String[] charNames = null;
+        List<String> charNameList = new ArrayList<String>();
+        while (rs.next()) {
+            if (rs.getString("name") != null) {
+                charNameList.add(rs.getString("name"));
+                System.out.println("got " + rs.getString("name"));
+            }
+        }
+        charNames = charNameList.toArray(charNames);
+        return charNames;
     }
 
     /**
@@ -229,8 +270,9 @@ public class Helper_JDBC
         sql = "CREATE TABLE CONTROLS"
             + " (Play_id        INT             NOT NULL,"
             + "  Char_name      VARCHAR(40)     NOT NULL,"
-            + " FOREIGN KEY (Player_id) REFERENCES PLAYER (id),"
-            + " FOREIGN KEY (Char_id) REFERENCES CHARACTR (id) );";
+            + " PRIMARY KEY (Play_id, Char_name),"
+            + " FOREIGN KEY (Play_id) REFERENCES PLAYER (id),"
+            + " FOREIGN KEY (Char_name) REFERENCES CHARACTR (name) );";
         execSQLUpdate(statemnt, sql);
 
         sql = "CREATE TABLE ABILITY"
@@ -289,53 +331,6 @@ public class Helper_JDBC
     }
 
     /**
-     * Create a single table by name
-     */
-    public void createTable (Connection db_conn, String tblName)
-    {
-        System.out.println("Creating " + tblName + " table...");
-    }
-
-    /**
-     * Drop TEST table
-     * @throws SQLException
-     */
-    public void dropTable (Connection db_conn,
-            String tableName) throws SQLException
-    {
-        System.out.println("Dropping table" + tableName + "...");
-        String sql;
-        statemnt = db_conn.createStatement();
-        sql = "DROP TABLE " + tableName+ ";";
-        try {
-            statemnt.executeUpdate(sql);
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            return;
-        }
-        System.out.println("Table deleted");
-        if (statemnt != null) {
-            statemnt.close();
-        }
-    }
-
-    /**
-     * Setup to work with a MySQL JDBC driver.
-     * @return true if it successfully sets up the driver.
-     */
-    public boolean activateJDBC()
-    {
-        try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-        }
-        catch (SQLException sqle) {
-            sqle.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Runs an sql update given by the string sql
      * @return true if sql executed successfully
      */
@@ -343,7 +338,7 @@ public class Helper_JDBC
     {
         try {
             statemnt.executeUpdate(sql);
-        } catch (SQLException e) {
+        } catch (SQLException sqle) {
             sqle.printStackTrace();
             return false;
         }
