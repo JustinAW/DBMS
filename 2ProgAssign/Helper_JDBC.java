@@ -12,6 +12,204 @@ public class Helper_JDBC
     private Statement statemnt = null;
 
     /**
+     * Updates the CHARACTR table in the database with the provided charInfo
+     */
+    public void updateCharAttrs (String[] columnNames, Object[] charInfo) throws SQLException
+    {
+        String sql = "";
+        String sqlEnd = "";
+        statemnt = db_conn.createStatement();
+
+        for (int i = 0; i < charInfo.length; i++) {
+            System.out.println("charInfo[" + String.valueOf(i) + "]: " + charInfo[i]);
+        }
+
+        sql = ""
+            + "UPDATE CHARACTR "
+            + "SET";
+        for (int i = 0; i < columnNames.length; i++) {
+            sqlEnd += " "
+                + columnNames[i] + " = '"
+                + charInfo[i] + "',";
+        }
+        sqlEnd = sqlEnd.substring(0, sqlEnd.length()-1);
+        sql += sqlEnd
+            + " WHERE name = '"
+            + (String) charInfo[0]
+            + "';";
+
+        System.out.println(sql);
+
+        execSQLUpdate(statemnt, sql);
+    }
+
+    /**
+     * Retrieves the attribute values of the selected character
+     * from the database
+     * @return Object array of the attribute values
+     */
+    public Object[] getCharInfo (String charName) throws SQLException
+    {
+        ResultSet rs = null;
+        String sql = null;
+        statemnt = db_conn.createStatement();
+
+        sql = "SELECT * FROM CHARACTR "
+            + "WHERE name = '" + charName + "';";
+
+        rs = statemnt.executeQuery(sql);
+
+        Object[] attributes = null;
+        List<Object> attrList = new ArrayList<Object>();
+        while (rs.next()) {
+            for (int i = 1; i < rs.getMetaData().getColumnCount() + 1; i++) {
+                attrList.add(rs.getObject(i));
+            }
+        }
+        attributes = new Object[attrList.size()];
+        attributes = attrList.toArray();
+
+        return attributes;
+    }
+
+    /**
+     * Retrieves the list of characters from the database that
+     * are controlled by the player with playID
+     * @return String array of the character names
+     */
+    public String[] getDBCharList(int playID) throws SQLException
+    {
+        ResultSet rs = null;
+        String sql = null;
+        statemnt = db_conn.createStatement();
+
+        sql = "SELECT * FROM CHARACTR chr "
+            + "JOIN CONTROLS cnt "
+            + "ON chr.name = cnt.Char_name "
+            + "WHERE cnt.Play_id = "
+            + String.valueOf(playID)
+            + ";";
+
+        rs = statemnt.executeQuery(sql);
+
+        String[] charNames = {};
+        List<String> charNameList = new ArrayList<String>();
+        while (rs.next()) {
+            if (rs.getString("name") != null) {
+                charNameList.add(rs.getString("name"));
+            }
+        }
+        charNames = new String[charNameList.size()];
+        charNames = charNameList.toArray(charNames);
+
+        return charNames;
+    }
+
+    /**
+     * Create all necessary tables in the database
+     */
+    public void createTables ( Connection db_conn) throws SQLException
+    {
+        System.out.println("Creating tables...");
+        statemnt = db_conn.createStatement();
+        String sql = null;
+
+        sql = "CREATE TABLE PERSON"
+            + " (login      VARCHAR(40) NOT NULL,"
+            + "  email      VARCHAR(40) NOT NULL,"
+            + "  password   VARCHAR(40) NOT NULL,"
+            + " PRIMARY KEY(login),"
+            + " UNIQUE(email) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE PLAYER"
+            + " (id         INT         NOT NULL,"
+            + "  Per_login  VARCHAR(40) NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Per_login) REFERENCES PERSON (login) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE LOCATION"
+            + " (id             INT             NOT NULL,"
+            + "  areaType       VARCHAR(20)     NOT NULL,"
+            + " PRIMARY KEY(id) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE CHARACTR"
+            + " (name      VARCHAR(40) NOT NULL,"
+            + "  strength  INT         NOT NULL,"
+            + "  stamina   INT         NOT NULL,"
+            + "  curHP     INT         NOT NULL,"
+            + "  maxHP     INT         NOT NULL,"
+            + "  Loc_id    INT         NOT NULL,"
+            + " PRIMARY KEY (name),"
+            + " FOREIGN KEY (Loc_id) REFERENCES LOCATION (id) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE CONTROLS"
+            + " (Play_id        INT             NOT NULL,"
+            + "  Char_name      VARCHAR(40)     NOT NULL,"
+            + " PRIMARY KEY (Play_id, Char_name),"
+            + " FOREIGN KEY (Play_id) REFERENCES PLAYER (id),"
+            + " FOREIGN KEY (Char_name) REFERENCES CHARACTR (name) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE ABILITY"
+            + " (id                 INT            NOT NULL,"
+            + "  type               VARCHAR(10)    NOT NULL,"
+            + "  execTime           INT            NOT NULL,"
+            + "  targetStat         VARCHAR(10)    NOT NULL,"
+            + "  benePenal          BOOL           NOT NULL,"
+            + "  effectRate         DOUBLE(3,2)    NOT NULL,"
+            + "  effectDuration     INT            NOT NULL,"
+            + " PRIMARY KEY (id) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE ITEM"
+            + " (id        INT         NOT NULL,"
+            + "  weight    INT         NOT NULL,"
+            + "  volume    INT         NOT NULL,"
+            + "  Loc_id    INT         NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Loc_id) REFERENCES LOCATION (id) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE CONTAINER"
+            + " (id         INT        NOT NULL,"
+            + "  weightLim  INT        NOT NULL,"
+            + "  volumeLim  INT        NOT NULL,"
+            + "  Item_id    INT        NOT NULL,"
+            + " PRIMARY KEY(id),"
+            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE WEAPON"
+            + " (id         INT        NOT NULL,"
+            + "  equipLoc   INT        NOT NULL,"
+            + "  Item_id    INT        NOT NULL,"
+            + "  Abil_id    INT        NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id),"
+            + " FOREIGN KEY (Abil_id) REFERENCES ABILITY (id) );";
+        execSQLUpdate(statemnt, sql);
+
+        sql = "CREATE TABLE ARMOR"
+            + " (id            INT        NOT NULL,"
+            + "  protection    INT        NOT NULL,"
+            + "  wearLoc       INT        NOT NULL,"
+            + "  Item_id       INT        NOT NULL,"
+            + " PRIMARY KEY (id),"
+            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id) );";
+        execSQLUpdate(statemnt, sql);
+
+        System.out.println("Tables created");
+
+        if (statemnt != null) {
+            statemnt.close();
+        }
+    }
+
+    /**
      * Runs insert statements to populate the database
      */
     public void runInsertion (Connection db_conn) throws SQLException
@@ -132,202 +330,6 @@ public class Helper_JDBC
             + " (2, 3, 2, 11),"
             + " (3, 4, 3, 12);";
         execSQLUpdate(statemnt, sql);
-
-        if (statemnt != null) {
-            statemnt.close();
-        }
-    }
-
-    public void updateCharAttrs (String[] columnNames, Object[] charInfo) throws SQLException
-    {
-        String sql = "";
-        String sqlEnd = "";
-        statemnt = db_conn.createStatement();
-
-        for (int i = 0; i < charInfo.length; i++) {
-            System.out.println("charInfo[" + String.valueOf(i) + "]: " + charInfo[i]);
-        }
-
-        sql = ""
-            + "UPDATE CHARACTR "
-            + "SET";
-        for (int i = 0; i < columnNames.length; i++) {
-            sqlEnd += " "
-                + columnNames[i] + " = '"
-                + charInfo[i] + "',";
-        }
-        sqlEnd = sqlEnd.substring(0, sqlEnd.length()-1);
-        sql += sqlEnd
-            + " WHERE name = '"
-            + (String) charInfo[0]
-            + "';";
-
-        System.out.println(sql);
-
-        execSQLUpdate(statemnt, sql);
-    }
-
-    public Object[] getCharInfo (String charName) throws SQLException
-    {
-        ResultSet rs = null;
-        String sql = null;
-        statemnt = db_conn.createStatement();
-
-        sql = "SELECT * FROM CHARACTR "
-            + "WHERE name = '" + charName + "';";
-
-        rs = statemnt.executeQuery(sql);
-
-        Object[] attributes = null;
-        List<Object> attrList = new ArrayList<Object>();
-
-        while (rs.next()) {
-            for (int i = 1; i < rs.getMetaData().getColumnCount() + 1; i++) {
-//                String colName = rs.getMetaData().getColumnName(i);
-                attrList.add(rs.getObject(i));
-            }
-        }
-        for (int i = 0; i < attrList.size(); i++) {
-            System.out.println(attrList.get(i));
-        }
-        attributes = new Object[attrList.size()];
-        attributes = attrList.toArray();
-        return attributes;
-    }
-
-    public String[] getDBCharList(int playID) throws SQLException
-    {
-        ResultSet rs = null;
-        String sql = null;
-        statemnt = db_conn.createStatement();
-
-        sql = "SELECT * FROM CHARACTR chr "
-            + "JOIN CONTROLS cnt "
-            + "ON chr.name = cnt.Char_name "
-            + "WHERE cnt.Play_id = "
-            + String.valueOf(playID)
-            + ";";
-
-        try {
-            rs = statemnt.executeQuery(sql);
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            if (statemnt != null) {
-                statemnt.close();
-            }
-            return null;
-        }
-
-        String[] charNames = null;
-        List<String> charNameList = new ArrayList<String>();
-        while (rs.next()) {
-            if (rs.getString("name") != null) {
-                charNameList.add(rs.getString("name"));
-            }
-        }
-        charNames = new String[charNameList.size()];
-        charNames = charNameList.toArray(charNames);
-        return charNames;
-    }
-
-    /**
-     * Create all necessary tables in the database
-     */
-    public void createTables ( Connection db_conn) throws SQLException
-    {
-        System.out.println("Creating tables...");
-        statemnt = db_conn.createStatement();
-        String sql = null;
-
-        sql = "CREATE TABLE PERSON"
-            + " (login      VARCHAR(40) NOT NULL,"
-            + "  email      VARCHAR(40) NOT NULL,"
-            + "  password   VARCHAR(40) NOT NULL,"
-            + " PRIMARY KEY(login),"
-            + " UNIQUE(email) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE PLAYER"
-            + " (id         INT         NOT NULL,"
-            + "  Per_login  VARCHAR(40) NOT NULL,"
-            + " PRIMARY KEY (id),"
-            + " FOREIGN KEY (Per_login) REFERENCES PERSON (login) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE LOCATION"
-            + " (id             INT             NOT NULL,"
-            + "  areaType       VARCHAR(20)     NOT NULL,"
-            + " PRIMARY KEY(id) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE CHARACTR"
-            + " (name      VARCHAR(40) NOT NULL,"
-            + "  strength  INT         NOT NULL,"
-            + "  stamina   INT         NOT NULL,"
-            + "  curHP     INT         NOT NULL,"
-            + "  maxHP     INT         NOT NULL,"
-            + "  Loc_id    INT         NOT NULL,"
-            + " PRIMARY KEY (name),"
-            + " FOREIGN KEY (Loc_id) REFERENCES LOCATION (id) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE CONTROLS"
-            + " (Play_id        INT             NOT NULL,"
-            + "  Char_name      VARCHAR(40)     NOT NULL,"
-            + " PRIMARY KEY (Play_id, Char_name),"
-            + " FOREIGN KEY (Play_id) REFERENCES PLAYER (id),"
-            + " FOREIGN KEY (Char_name) REFERENCES CHARACTR (name) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE ABILITY"
-            + " (id                 INT            NOT NULL,"
-            + "  type               VARCHAR(10)    NOT NULL,"
-            + "  execTime           INT            NOT NULL,"
-            + "  targetStat         VARCHAR(10)    NOT NULL,"
-            + "  benePenal          BOOL           NOT NULL,"
-            + "  effectRate         DOUBLE(3,2)    NOT NULL,"
-            + "  effectDuration     INT            NOT NULL,"
-            + " PRIMARY KEY (id) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE ITEM"
-            + " (id        INT         NOT NULL,"
-            + "  weight    INT         NOT NULL,"
-            + "  volume    INT         NOT NULL,"
-            + "  Loc_id    INT         NOT NULL,"
-            + " PRIMARY KEY (id),"
-            + " FOREIGN KEY (Loc_id) REFERENCES LOCATION (id) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE CONTAINER"
-            + " (id         INT        NOT NULL,"
-            + "  weightLim  INT        NOT NULL,"
-            + "  volumeLim  INT        NOT NULL,"
-            + "  Item_id    INT        NOT NULL,"
-            + " PRIMARY KEY(id),"
-            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE WEAPON"
-            + " (id         INT        NOT NULL,"
-            + "  equipLoc   INT        NOT NULL,"
-            + "  Item_id    INT        NOT NULL,"
-            + "  Abil_id    INT        NOT NULL,"
-            + " PRIMARY KEY (id),"
-            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id),"
-            + " FOREIGN KEY (Abil_id) REFERENCES ABILITY (id) );";
-        execSQLUpdate(statemnt, sql);
-
-        sql = "CREATE TABLE ARMOR"
-            + " (id            INT        NOT NULL,"
-            + "  protection    INT        NOT NULL,"
-            + "  wearLoc       INT        NOT NULL,"
-            + "  Item_id       INT        NOT NULL,"
-            + " PRIMARY KEY (id),"
-            + " FOREIGN KEY (Item_id) REFERENCES ITEM (id) );";
-        execSQLUpdate(statemnt, sql);
-
-        System.out.println("Tables created");
 
         if (statemnt != null) {
             statemnt.close();

@@ -34,15 +34,13 @@ public class Main_JDBC
         Scanner s = new Scanner(System.in);
         int choice = 0;
 
-        while (choice != 6) {
+        while (choice != 4) {
             System.out.println("What would you like to do?");
             System.out.println(
                       "1: Create tables in database\n"
                     + "2: Run inserts to populate database\n"
-                    + "3: Open GUI view 1\n"
-                    + "4: Open GUI view 2\n"
-                    + "5: Open GUI view 3\n"
-                    + "6: Exit");
+                    + "3: Open GUI\n"
+                    + "4: Exit");
             choice = s.nextInt();
             s.nextLine(); // clear the newline from the buffer
 
@@ -51,7 +49,6 @@ public class Main_JDBC
             } else if (choice == 2) {
                 helper.runInsertion(db_conn);
             } else if (choice == 3) {
-            } else if (choice == 4) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         try {
@@ -61,7 +58,6 @@ public class Main_JDBC
                         }
                     }
                 });
-            } else if (choice == 5) {
             }
         }
 

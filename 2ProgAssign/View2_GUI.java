@@ -34,22 +34,9 @@ public class View2_GUI
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-//        try {
-            initUpdateBtn();
-//        } catch (SQLException sqle) {
-//            sqle.printStackTrace();
-//        }
-//        try {
-            initCharTable();
-//        } catch (SQLException sqle) {
-//            sqle.printStackTrace();
-//        }
 
-        Object[] data = {
-            "Adam", 95, 20, 92, 100, 0
-        };
-
-        updateCharTable(data);
+        initUpdateBtn();
+        initCharTable();
 
         window.pack();
         window.setVisible(true);
@@ -73,8 +60,6 @@ public class View2_GUI
         characterList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    // TODO handle return from getSelectedValue
-                    // to run a select on the database
                     String selection = (String) characterList.getSelectedValue();
                     try {
                         charInfo = helper.getCharInfo(selection);
@@ -158,8 +143,6 @@ public class View2_GUI
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {
                     for (int i = 0; i < charTable.getModel().getColumnCount(); i++) {
-                        // TODO storing updated info instead of just printing it
-//                        System.out.println(charTable.getModel().getValueAt(0, i));
                         charInfo[i] = (Object) charTable.getModel().getValueAt(0, i);
                     }
                 }
@@ -168,14 +151,4 @@ public class View2_GUI
 
         window.add(tblPanel, BorderLayout.SOUTH);
     }
-
-//    public static void main(String args[])
-//    {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                new View2_GUI();
-//            }
-//        });
-//    }
-
 }
