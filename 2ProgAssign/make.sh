@@ -7,5 +7,7 @@ elif [ "$1" = "clean" ]; then
     rm *.class
 else
     echo "compiling..."
-    javac -bootclasspath /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar -target 8 -source 8 -cp mysql-connector-java-5.1.29-bin.jar:. Main_JDBC.java Helper_JDBC.java View2_GUI.java
+    javac -cp mysql-connector-java-5.1.29-bin.jar:. Main_JDBC.java Helper_JDBC.java View2_GUI.java
 fi
+
+#-bootclasspath /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar -target 8 -source 8

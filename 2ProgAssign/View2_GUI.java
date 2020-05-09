@@ -77,7 +77,7 @@ public class View2_GUI
                     // to run a select on the database
                     String selection = (String) characterList.getSelectedValue();
                     try {
-                       charInfo = helper.getCharInfo(selection);
+                        charInfo = helper.getCharInfo(selection);
                     } catch (SQLException sqle) {
                         sqle.printStackTrace();
                     }
@@ -159,7 +159,8 @@ public class View2_GUI
                 if (e.getType() == TableModelEvent.UPDATE) {
                     for (int i = 0; i < charTable.getModel().getColumnCount(); i++) {
                         // TODO storing updated info instead of just printing it
-                        System.out.println(charTable.getModel().getValueAt(0, i));
+//                        System.out.println(charTable.getModel().getValueAt(0, i));
+                        charInfo[i] = (Object) charTable.getModel().getValueAt(0, i);
                     }
                 }
             }

@@ -140,23 +140,29 @@ public class Helper_JDBC
 
     public void updateCharAttrs (String[] columnNames, Object[] charInfo) throws SQLException
     {
-        String sql = null;
-        String sqlEnd = null;
+        String sql = "";
+        String sqlEnd = "";
         statemnt = db_conn.createStatement();
 
+        for (int i = 0; i < charInfo.length; i++) {
+            System.out.println("charInfo[" + String.valueOf(i) + "]: " + charInfo[i]);
+        }
+
         sql = ""
-            + "UPDATE CHARACTR"
+            + "UPDATE CHARACTR "
             + "SET";
         for (int i = 0; i < columnNames.length; i++) {
             sqlEnd += " "
-                + columnNames[i] + " = "
-                + charInfo[i] + ",";
+                + columnNames[i] + " = '"
+                + charInfo[i] + "',";
         }
         sqlEnd = sqlEnd.substring(0, sqlEnd.length()-1);
         sql += sqlEnd
-            + "WHERE name = "
+            + " WHERE name = '"
             + (String) charInfo[0]
-            + ";";
+            + "';";
+
+        System.out.println(sql);
 
         execSQLUpdate(statemnt, sql);
     }
@@ -167,27 +173,25 @@ public class Helper_JDBC
         String sql = null;
         statemnt = db_conn.createStatement();
 
-        sql = "SELECT * FROM CHARACTR WHERE name ='"
-            + charName
-            + "';";
+        sql = "SELECT * FROM CHARACTR "
+            + "WHERE name = '" + charName + "';";
 
-        try {
-            rs = statemnt.executeQuery(sql);
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            if (statemnt != null) {
-                statemnt.close();
-            }
-            return null;
-        }
+        rs = statemnt.executeQuery(sql);
 
         Object[] attributes = null;
         List<Object> attrList = new ArrayList<Object>();
-        for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-//            String colName = rs.getMetaData().getColumnName(i);
-            attrList.add(rs.getObject(i));
+
+        while (rs.next()) {
+            for (int i = 1; i < rs.getMetaData().getColumnCount() + 1; i++) {
+//                String colName = rs.getMetaData().getColumnName(i);
+                attrList.add(rs.getObject(i));
+            }
         }
-        attributes = attrList.toArray(attributes);
+        for (int i = 0; i < attrList.size(); i++) {
+            System.out.println(attrList.get(i));
+        }
+        attributes = new Object[attrList.size()];
+        attributes = attrList.toArray();
         return attributes;
     }
 
@@ -219,7 +223,6 @@ public class Helper_JDBC
         while (rs.next()) {
             if (rs.getString("name") != null) {
                 charNameList.add(rs.getString("name"));
-                System.out.println("got " + rs.getString("name"));
             }
         }
         charNames = new String[charNameList.size()];
