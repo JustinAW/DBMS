@@ -1,3 +1,10 @@
+/********************************************************
+ * Main class for creating tables in a database,        *
+ * populating the database, and opening a GUI to update *
+ * the CHARATR table in the database                    *
+ * @author Justin Weigle                                *
+ * edited: 09 May 2020                                  *
+ ********************************************************/
 import java.sql.*;
 import java.util.*;
 import javax.swing.*;
@@ -5,14 +12,12 @@ import javax.swing.*;
 public class Main_JDBC
 {
     private static final String DB_URL = ""
-        + "jdbc:mysql://192.168.0.38:3306/dbms_pa2";
-//        + "jdbc:mysql://db.cs.ship.edu:3306/csc371_26";
-////        + "?useTimezone=true"
-////        + "?serverTimezon=EST";
-//    private static final String USERNAME = "csc371_26";
-//    private static final String PASSWORD = "Password26";
-    private static final String USERNAME = "jw6858";
-    private static final String PASSWORD = "lePassword";
+        + "jdbc:mysql://db.cs.ship.edu:3306/csc371_26";
+//        + "jdbc:mysql://192.168.0.38:3306/dbms_pa2";
+    private static final String USERNAME = "csc371_26";
+    private static final String PASSWORD = "Password26";
+//    private static final String USERNAME = "jw6858";
+//    private static final String PASSWORD = "lePassword";
     public static Connection db_conn = null;
 
     public static void main (String args[]) throws SQLException

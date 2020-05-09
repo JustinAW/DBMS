@@ -1,3 +1,10 @@
+/********************************************************
+ * Helper class with all the methods for interacting    *
+ * with the database, such as creating tables,          *
+ * inserting, and updating the database                 *
+ * @author Justin Weigle                                *
+ * edited: 09 May 2020                                  *
+ ********************************************************/
 import java.io.*;
 import java.sql.*;
 import java.util.*;
